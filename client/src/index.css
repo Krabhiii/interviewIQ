@@ -1,0 +1,13 @@
+@import "tailwindcss";
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 0 60px rgba(59,130,246,0.15);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  box-shadow: 0 0 80px rgba(59,130,246,0.3);
+}
