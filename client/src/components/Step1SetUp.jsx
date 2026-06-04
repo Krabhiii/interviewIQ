@@ -71,9 +71,13 @@ function Step1SetUp({ onStart }) {
 
       setAnalysisDone(true);
     } catch (err) {
-      console.error(err);
-      setError("Resume analysis failed");
-    }
+  console.log("RESUME ERROR FULL:", err);
+  console.log("RESUME ERROR DATA:", err.response?.data);
+
+  setError(
+    err.response?.data?.message || "Resume analysis failed"
+  );
+}
 
     setAnalyzing(false);
   };
