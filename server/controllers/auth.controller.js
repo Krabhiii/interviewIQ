@@ -16,9 +16,9 @@ export const googleAuth = async (req, res) => {
         }
 
         res.cookie("token", token, {
-  http: true,
-  secure: true,       // ✅ keep false for localhost
-  sameSite: "lax",     // ✅ use lax instead of strict for cross-port dev
+ httpOnly: true
+  secure: true,
+    sameSite: "none"
   maxAge: 7 * 24 * 60 * 60 * 1000
 });
 
