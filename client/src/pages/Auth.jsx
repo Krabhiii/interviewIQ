@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Auth.css";
 import { FaRobot } from "react-icons/fa";
 import { signInWithPopup } from "firebase/auth";
@@ -11,61 +11,85 @@ import { setUserData } from "../redux/userSlice";
 const Auth = ({ onClose }) => {
   const dispatch = useDispatch();
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const handleGoogleAuth = async () => {
     try {
+      setLoading(true);
+      setError("");
+
       const res = await signInWithPopup(auth, provider);
-      const user = res.user;
+      const firebaseUser = res.user;
 
       const result = await axios.post(
-        serverUrl + "/api/auth/google",
+        `${serverUrl}/api/auth/google`,
         {
-          name: user.displayName,
-          email: user.email,
+          name: firebaseUser.displayName,
+          email: firebaseUser.email,
         },
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        }
       );
 
       dispatch(setUserData(result.data));
+
       onClose();
     } catch (err) {
-      console.log(err);
+      console.log("GOOGLE AUTH ERROR:", err);
+      console.log("BACKEND ERROR:", err.response?.data);
+
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Google login failed"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="auth-container">
       <div className="auth-box">
+        <button className="close-btn" onClick={onClose}>
+          ✕
+        </button>
 
-        {/* CLOSE BUTTON */}
-        <button className="close-btn" onClick={onClose}>✕</button>
-
-        {/* LOGO */}
         <div className="logo-row">
           <FaRobot className="logo-icon" />
           <h2>InterviewIQ.AI</h2>
         </div>
 
-        {/* HEADING */}
         <h1 className="main-heading">
           Continue with <br />
           <span className="highlight">AI Powered Interview</span>
         </h1>
 
-        {/* SUB TEXT */}
         <p className="sub-text">
           Practice real interview scenarios, receive AI-powered feedback,
           and improve your confidence step by step.
         </p>
 
-        {/* BUTTON */}
-        <button className="google-btn" onClick={handleGoogleAuth}>
+        {error && (
+          <p style={{ color: "#f87171", fontSize: "13px", marginBottom: "12px" }}>
+            {error}
+          </p>
+        )}
+
+        <button
+          className="google-btn"
+          onClick={handleGoogleAuth}
+          disabled={loading}
+        >
           <img
             src="https://cdn-icons-png.flaticon.com/512/281/281764.png"
             alt="google"
           />
-          Continue with Google
-        </button>
 
+          {loading ? "Connecting..." : "Continue with Google"}
+        </button>
       </div>
     </div>
   );
