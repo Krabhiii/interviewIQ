@@ -11,7 +11,7 @@ import axios from 'axios'
 import { setUserData } from './redux/userSlice'
 import { useDispatch } from 'react-redux';
 
-export const serverUrl = "http://localhost:5000"
+export const serverUrl = "https://interviewiq-ys5c.onrender.com"
 
 
 const App = () => {
